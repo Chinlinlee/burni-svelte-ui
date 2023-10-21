@@ -149,10 +149,11 @@
             {#if fetchedFhirResource?.resourceType === "Bundle"}
                 {#if fetchedFhirResource?.entry?.length > 0}
                     <div class="grid grid-cols-1 gap-4">
-                        {#each fetchedFhirResource?.entry as resource, i}
+                        {#each fetchedFhirResource?.entry as entry, i}
+                            <h3 class="text-xl font-bold">{entry?.resource?.resourceType} / {entry?.resource?.id}</h3>
                             <JSONEditor
                                 content={{
-                                    text: JSON.stringify(resource, null, 2)
+                                    text: JSON.stringify(entry?.resource, null, 2)
                                 }}
                                 mode={Mode.tree}
                                 escapeControlCharacters={true}
