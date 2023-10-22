@@ -1,7 +1,7 @@
 <script>
     import { settings, searchUrl, clickSearchCounter } from "../../store/stores";
     import axios from "axios";
-    import { GradientButton, PaginationItem } from "flowbite-svelte";
+    import { GradientButton, PaginationItem, Button } from "flowbite-svelte";
     import { JSONEditor, Mode } from "svelte-jsoneditor";
 
     let fetchFhirResourcesData = doFetchFhirResourcesData();
@@ -13,9 +13,9 @@
     let jsonEditors = [];
 
     $: {
-        if (jsonEditors.length > 0) {
+        if (jsonEditors.length > 0 && fetchedFhirResource) {
             jsonEditors.forEach((jsonEditor) => {
-                jsonEditor.expand((_) => false);
+                jsonEditor?.expand((_) => false);
             });
         }
     }
@@ -38,11 +38,33 @@
     }
 
     function paginationPrevious() {
-        console.log("do previous");
+        let previousUrl = getPreviousUrlInBundle();
+        if (previousUrl) {
+            $searchUrl = previousUrl;
+            fetchFhirResourcesData = doFetchFhirResourcesData();
+        }
     }
 
-    function paginationNext() {
-        console.log("do next");
+    async function paginationNext() {
+        let nextUrl = getNextUrlInBundle();
+        if (nextUrl) {
+            $searchUrl = nextUrl;
+            fetchFhirResourcesData = doFetchFhirResourcesData();
+        }
+    }
+
+    function getNextUrlInBundle() {
+        return fetchedFhirResource.link?.find(
+            (/**@type {import("../../models/fhir/bundle-link").BundleLink}*/ link) =>
+                link.relation === "next"
+        )?.url;
+    }
+
+    function getPreviousUrlInBundle() {
+        return fetchedFhirResource.link?.find(
+            (/**@type {import("../../models/fhir/bundle-link").BundleLink}*/ link) =>
+                link.relation === "previous"
+        )?.url;
     }
 
     function downloadFetchedFhirResourceJson() {
@@ -118,7 +140,12 @@
                 </div>
             </div>
             <div class="flex space-x-3">
-                <PaginationItem on:click={paginationPrevious}>
+                <Button
+                    on:click={paginationPrevious}
+                    disabled={!getPreviousUrlInBundle()}
+                    color="light"
+                    size="xs"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -129,8 +156,13 @@
                         /></svg
                     >
                     Previous
-                </PaginationItem>
-                <PaginationItem on:click={paginationNext}>
+                </Button>
+                <Button
+                    on:click={paginationNext}
+                    disabled={!getNextUrlInBundle()}
+                    color="light"
+                    size="xs"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -141,7 +173,7 @@
                         /></svg
                     >
                     Next
-                </PaginationItem>
+                </Button>
             </div>
         </section>
 
@@ -150,7 +182,9 @@
                 {#if fetchedFhirResource?.entry?.length > 0}
                     <div class="grid grid-cols-1 gap-4">
                         {#each fetchedFhirResource?.entry as entry, i}
-                            <h3 class="text-xl font-bold">{entry?.resource?.resourceType} / {entry?.resource?.id}</h3>
+                            <h3 class="text-xl font-bold">
+                                {entry?.resource?.resourceType} / {entry?.resource?.id}
+                            </h3>
                             <JSONEditor
                                 content={{
                                     text: JSON.stringify(entry?.resource, null, 2)
