@@ -162,7 +162,7 @@
     </div>
 
     <div class="settings-parameters">
-        <Label for="search-parameters">Parameters</Label>
+        <Label for="search-parameters" class="block mb-2 text-gray-600">Parameters</Label>
         <div class="add-section mb-4">
             <SettingsSearchParameter
                 {selectedResourceType}
@@ -187,5 +187,13 @@
                 />
             {/each}
         {/if}
+    </div>
+
+    <div class="settings-layout">
+        <Label class="block mb-2 text-gray-600">Layout</Label>
+        <div class="flex flex-wrap justify-between">
+            <Button color="{$settings.layout === 'grid' ? 'primary' : 'none'}" on:click={() => ($settings.layout = 'grid')}>Grid</Button>
+            <Button color="{$settings.layout === 'json-viewer' ? 'primary' : 'none'}" on:click={() => ($settings.layout = 'json-viewer')}>JSON Viewer</Button>
+        </div>
     </div>
 </Drawer>

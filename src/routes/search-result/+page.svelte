@@ -1,8 +1,13 @@
 <script>
     import { settings, searchUrl, clickSearchCounter } from "../../store/stores";
     import axios from "axios";
-    import { GradientButton, PaginationItem, Button } from "flowbite-svelte";
+    import { GradientButton, PaginationItem, Button, Card } from "flowbite-svelte";
     import { JSONEditor, Mode } from "svelte-jsoneditor";
+    import { flatten } from "flat";
+    import { isUrlValid } from "$lib/index";
+    import * as _ from "lodash";
+    import ObjectComponent from "../../components/search-result/object-component.svelte";
+    import ArrayComponent from "../../components/search-result/array-component.svelte";
 
     let fetchFhirResourcesData = doFetchFhirResourcesData();
     /** @type {any | undefined}*/
@@ -21,8 +26,8 @@
     }
 
     async function doFetchFhirResourcesData() {
-        if (!$searchUrl) return;
-
+        if (!isUrlValid($searchUrl)) return;
+        
         /** @type { import("axios").AxiosRequestConfig<any> | undefined }*/
         let option = undefined;
         if ($settings.token) {
@@ -176,28 +181,50 @@
                 </Button>
             </div>
         </section>
-
-        <section class="search-result-body">
-            {#if fetchedFhirResource?.resourceType === "Bundle"}
-                {#if fetchedFhirResource?.entry?.length > 0}
-                    <div class="grid grid-cols-1 gap-4">
-                        {#each fetchedFhirResource?.entry as entry, i}
-                            <h3 class="text-xl font-bold">
-                                {entry?.resource?.resourceType} / {entry?.resource?.id}
-                            </h3>
-                            <JSONEditor
-                                content={{
-                                    text: JSON.stringify(entry?.resource, null, 2)
-                                }}
-                                mode={Mode.tree}
-                                escapeControlCharacters={true}
-                                readOnly={true}
-                                bind:this={jsonEditors[i]}
-                            />
-                        {/each}
-                    </div>
+        <div class="layout-json-viewer">
+            <section class="search-result-body">
+                {#if fetchedFhirResource?.resourceType === "Bundle"}
+                    {#if fetchedFhirResource?.entry?.length > 0}
+                        <div
+                            class="grid {$settings.layout === 'json-viewer'
+                                ? 'grid-cols-1'
+                                : 'grid-cols-2'} gap-4"
+                        >
+                            {#each fetchedFhirResource?.entry as entry, i}
+                                {#if $settings.layout === "json-viewer"}
+                                    <h3 class="text-xl font-bold">
+                                        {entry?.resource?.resourceType} / {entry?.resource?.id}
+                                    </h3>
+                                    <JSONEditor
+                                        content={{
+                                            text: JSON.stringify(entry?.resource, null, 2)
+                                        }}
+                                        mode={Mode.tree}
+                                        escapeControlCharacters={true}
+                                        readOnly={true}
+                                        bind:this={jsonEditors[i]}
+                                    />
+                                {:else if $settings.layout === "grid"}
+                                    <Card class="w-full max-w-[100%]">
+                                        <h3 class="text-xl font-bold">
+                                            {entry?.resource?.resourceType} / {entry?.resource?.id}
+                                        </h3>
+                                        {#each Object.entries(entry?.resource) as [key, value]}
+                                            {#if Array.isArray(value)}
+                                                <ArrayComponent inputArray={value} {key} />
+                                            {:else if _.isObject(value)}
+                                                <ObjectComponent data={value} />
+                                            {:else}
+                                                <div>{key}: {value}</div>
+                                            {/if}
+                                        {/each}
+                                    </Card>
+                                {/if}
+                            {/each}
+                        </div>
+                    {/if}
                 {/if}
-            {/if}
-        </section>
+            </section>
+        </div>
     {/await}
 </section>

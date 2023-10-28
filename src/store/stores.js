@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 export const settings = writable({
-    server: "",
+    server: "https://hapi.fhir.tw/fhir",
     id: "",
     resourceType: "Patient",
     token: "",
@@ -13,7 +13,8 @@ export const settings = writable({
         display: "",
         modifier: "",
         type: "number",
-    }]
+    }],
+    layout: "json-viewer"
 });
 
 export const disabledNavSearchButton = writable(true);
