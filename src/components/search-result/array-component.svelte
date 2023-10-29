@@ -17,11 +17,11 @@
             <span slot="header">{key}:</span>
             {#each inputArray as item, index}
                 {#if _.isString(item)}
-                    <p>{index + 1}. {item}</p>
+                    <p class="p-2">{index + 1}. {item}</p>
                 {:else if Array.isArray(item)}
                     <svelte:self inputArray={item} key={index} />
                 {:else}
-                    <p>{index + 1}.</p>
+                    <p class="px-2 py-1">{index + 1}.</p>
                     <ObjectComponent data={item} />
                 {/if}
             {/each}
