@@ -3,6 +3,7 @@
     import { Button, Modal } from "flowbite-svelte";
     import { JSONEditor, Mode } from "svelte-jsoneditor";
     import { searchUrl, settings } from "../../store/stores";
+    import LoadingModal from "../loading-modal.svelte";
 
     /** @type {any} */
     export let resource;
@@ -12,17 +13,23 @@
     let updateResourcePromise;
     /** @type {JSONEditor} */
     let myJsonEditor;
+    let openLoadingModal = false;
 
     async function updateResource() {
-        // @ts-ignore
-        let editorText = myJsonEditor.get().text;
-        let editorResource = JSON.parse(editorText);
-        let res = await axios.put(
-            `${$settings.server}/${resource.resourceType}/${resource.id}`,
-            editorResource
-        );
-        resource = res.data;
-        return res.data;
+        try {
+            // @ts-ignore
+            let editorText = myJsonEditor.get().text;
+            let editorResource = JSON.parse(editorText);
+            let res = await axios.put(
+                `${$settings.server}/${resource.resourceType}/${resource.id}`,
+                editorResource
+            );
+            resource = res.data;
+            openLoadingModal = false;
+            return res.data;
+        } catch (e) {
+            throw e;
+        }
     }
 
     function resetJsonEditorContent() {
@@ -34,7 +41,7 @@
 
 <Modal title="{resource?.resourceType} / {resource?.id}" bind:open outsideclose>
     {#await updateResourcePromise}
-        <p>waiting...</p>
+        <LoadingModal bind:openLoadingModal />
     {:then data}
         {#if data}
             <p>Update success</p>
@@ -51,7 +58,10 @@
         />
     </div>
     <svelte:fragment slot="footer">
-        <Button on:click={() => (updateResourcePromise = updateResource())}>Update</Button>
+        <Button
+            on:click={() => ((openLoadingModal = true), (updateResourcePromise = updateResource()))}
+            >Update</Button
+        >
         <Button color="yellow" on:click={resetJsonEditorContent}>Reset</Button>
     </svelte:fragment>
 </Modal>
