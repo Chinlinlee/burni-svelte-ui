@@ -6,16 +6,24 @@
 
     export let data;
     export let divClass = "";
+    export let field;
 </script>
 
 <div class={divClass}>
-    {#each Object.entries(data) as [key, value]}
-        {#if Array.isArray(value)}
-            <ArrayComponent inputArray={value} {key} />
-        {:else if _.isObject(value)}
-            <svelte:self data={value} />
-        {:else}
-            <div>{key}: {value}</div>
+    <div class="object-component">
+        {#if field}
+            <span>{field}:</span>
         {/if}
-    {/each}
+        <div class="ml-2">
+            {#each Object.entries(data) as [key, value]}
+                {#if Array.isArray(value)}
+                    <ArrayComponent inputArray={value} {key} />
+                {:else if _.isObject(value)}
+                    <svelte:self data={value} field={key} />
+                {:else}
+                    <div>{key}: {value}</div>
+                {/if}
+            {/each}
+        </div>
+    </div>
 </div>

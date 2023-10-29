@@ -212,7 +212,7 @@
                                             {#if Array.isArray(value)}
                                                 <ArrayComponent inputArray={value} {key} />
                                             {:else if _.isObject(value)}
-                                                <ObjectComponent data={value} />
+                                                <ObjectComponent data={value} field={key} />
                                             {:else}
                                                 <div>{key}: {value}</div>
                                             {/if}
