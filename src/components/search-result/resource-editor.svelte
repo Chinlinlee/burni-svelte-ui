@@ -24,6 +24,12 @@
         resource = res.data;
         return res.data;
     }
+
+    function resetJsonEditorContent() {
+        myJsonEditor.set({
+            text: JSON.stringify(resource, null, 2)
+        });
+    }
 </script>
 
 <Modal title="{resource?.resourceType} / {resource?.id}" bind:open outsideclose>
@@ -46,5 +52,6 @@
     </div>
     <svelte:fragment slot="footer">
         <Button on:click={() => (updateResourcePromise = updateResource())}>Update</Button>
+        <Button color="yellow" on:click={resetJsonEditorContent}>Reset</Button>
     </svelte:fragment>
 </Modal>
