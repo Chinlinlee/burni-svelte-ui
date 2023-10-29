@@ -1,11 +1,10 @@
 <script>
+    import * as _ from "lodash";
     import { settings, searchUrl, clickSearchCounter } from "../../store/stores";
     import axios from "axios";
     import { GradientButton, PaginationItem, Button, Card } from "flowbite-svelte";
     import { JSONEditor, Mode } from "svelte-jsoneditor";
-    import { flatten } from "flat";
     import { isUrlValid } from "$lib/index";
-    import * as _ from "lodash";
     import ObjectComponent from "../../components/search-result/object-component.svelte";
     import ArrayComponent from "../../components/search-result/array-component.svelte";
 
