@@ -7,6 +7,7 @@
     import { isUrlValid } from "$lib/index";
     import ObjectComponent from "../../components/search-result/object-component.svelte";
     import ArrayComponent from "../../components/search-result/array-component.svelte";
+    import ResourceEditor from "../../components/search-result/resource-editor.svelte";
 
     let fetchFhirResourcesData = doFetchFhirResourcesData();
     /** @type {any | undefined}*/
@@ -15,6 +16,8 @@
     $: $clickSearchCounter, (fetchFhirResourcesData = doFetchFhirResourcesData());
     /** @type { JSONEditor[] }*/
     let jsonEditors = [];
+    /** @type {boolean[]} */
+    let openResourceEditorBooleans = [];
 
     $: {
         if (jsonEditors.length > 0 && fetchedFhirResource) {
@@ -26,6 +29,9 @@
 
     async function doFetchFhirResourcesData() {
         if (!isUrlValid($searchUrl)) return;
+
+        openResourceEditorBooleans = [];
+        openResourceEditorBooleans.length = 0;
 
         /** @type { import("axios").AxiosRequestConfig<any> | undefined }*/
         let option = undefined;
@@ -61,14 +67,14 @@
     function getNextUrlInBundle() {
         return fetchedFhirResource.link?.find(
             (/**@type {import("../../models/fhir/bundle-link").BundleLink}*/ link) =>
-                link.relation === "next"
+                link?.relation === "next"
         )?.url;
     }
 
     function getPreviousUrlInBundle() {
         return fetchedFhirResource.link?.find(
             (/**@type {import("../../models/fhir/bundle-link").BundleLink}*/ link) =>
-                link.relation === "previous"
+                link?.relation === "previous"
         )?.url;
     }
 
@@ -205,35 +211,64 @@
                                 : 'grid-cols-2'} gap-4"
                         >
                             {#each fetchedFhirResource?.entry as entry, i}
-                                {#if $settings.layout === "json-viewer"}
-                                    <h3 class="text-xl font-bold">
-                                        {entry?.resource?.resourceType} / {entry?.resource?.id}
-                                    </h3>
-                                    <JSONEditor
-                                        content={{
-                                            text: JSON.stringify(entry?.resource, null, 2)
-                                        }}
-                                        mode={Mode.tree}
-                                        escapeControlCharacters={true}
-                                        readOnly={true}
-                                        bind:this={jsonEditors[i]}
+                                <div>
+                                    <Button
+                                        on:click={() => (openResourceEditorBooleans[i] = true)}
+                                        color="primary"
+                                        class="mb-2"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            class="w-5 h-5 mr-1"
+                                            fill="currentColor"
+                                            ><title>file-document-edit-outline</title><path
+                                                d="M8,12H16V14H8V12M10,20H6V4H13V9H18V12.1L20,10.1V8L14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H10V20M8,18H12.1L13,17.1V16H8V18M20.2,13C20.3,13 20.5,13.1 20.6,13.2L21.9,14.5C22.1,14.7 22.1,15.1 21.9,15.3L20.9,16.3L18.8,14.2L19.8,13.2C19.9,13.1 20,13 20.2,13M20.2,16.9L14.1,23H12V20.9L18.1,14.8L20.2,16.9Z"
+                                            /></svg
+                                        >
+                                        Edit
+                                    </Button>
+                                    <ResourceEditor
+                                        bind:open={openResourceEditorBooleans[i]}
+                                        resource={entry?.resource}
                                     />
-                                {:else if $settings.layout === "grid"}
+
+                                    {#if $settings.layout === "json-viewer"}
                                     <Card class="w-full max-w-[100%]">
                                         <h3 class="text-xl font-bold">
                                             {entry?.resource?.resourceType} / {entry?.resource?.id}
                                         </h3>
-                                        {#each Object.entries(entry?.resource) as [key, value]}
-                                            {#if Array.isArray(value)}
-                                                <ArrayComponent inputArray={value} {key} />
-                                            {:else if _.isObject(value)}
-                                                <ObjectComponent data={value} field={key} />
-                                            {:else}
-                                                <div>{key}: {value}</div>
-                                            {/if}
-                                        {/each}
+                                        <div>
+                                            <JSONEditor
+                                                content={{
+                                                    text: JSON.stringify(entry?.resource, null, 2)
+                                                }}
+                                                mode={Mode.tree}
+                                                escapeControlCharacters={true}
+                                                readOnly={true}
+                                                bind:this={jsonEditors[i]}
+                                            />
+                                        </div>
                                     </Card>
-                                {/if}
+                                        
+                                    {:else if $settings.layout === "grid"}
+                                        <Card class="w-full max-w-[100%]">
+                                            <h3 class="text-xl font-bold">
+                                                {entry?.resource?.resourceType} / {entry?.resource
+                                                    ?.id}
+                                            </h3>
+                                            {#each Object.entries(entry?.resource) as [key, value]}
+                                                {#if Array.isArray(value)}
+                                                    <ArrayComponent inputArray={value} {key} />
+                                                {:else if _.isObject(value)}
+                                                    <ObjectComponent data={value} field={key} />
+                                                {:else}
+                                                    <div>{key}: {value}</div>
+                                                {/if}
+                                            {/each}
+                                        </Card>
+                                    {/if}
+                                </div>
                             {/each}
                         </div>
                     {/if}
