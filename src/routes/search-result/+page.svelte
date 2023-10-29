@@ -26,7 +26,7 @@
 
     async function doFetchFhirResourcesData() {
         if (!isUrlValid($searchUrl)) return;
-        
+
         /** @type { import("axios").AxiosRequestConfig<any> | undefined }*/
         let option = undefined;
         if ($settings.token) {
@@ -38,6 +38,7 @@
         }
         const response = await axios.get($searchUrl, option);
         fetchedFhirResource = response.data;
+        changeSingleResourceToBundle();
         return response.data;
     }
 
@@ -93,6 +94,20 @@
             document.body.append(a);
             a.click();
             a.remove();
+        }
+    }
+
+    function changeSingleResourceToBundle() {
+        if (fetchedFhirResource.resourceType !== "Bundle") {
+            fetchedFhirResource = {
+                resourceType: "Bundle",
+                type: "searchset",
+                entry: [
+                    {
+                        resource: fetchedFhirResource
+                    }
+                ]
+            };
         }
     }
 </script>
