@@ -10,11 +10,13 @@
     import SearchingGridViewSkeleton from "../../components/search-result/searching-grid-view-skeleton.svelte";
     import { Alert } from "flowbite-svelte";
 
+    /** @type {boolean[]} */
+    let openResourceEditorBooleans = [];
+    
     let fetchFhirResourcesData = doFetchFhirResourcesData();
     /** @type {any | undefined}*/
     let fetchedFhirResource;
-    /** @type {boolean[]} */
-    let openResourceEditorBooleans = [];
+    
 
     $: $clickSearchCounter, (fetchFhirResourcesData = doFetchFhirResourcesData());
 

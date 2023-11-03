@@ -18,7 +18,6 @@
     import { isUrlValid } from "$lib";
     import { changeNavSearchUrl } from "../helper/nav-search-url.svelte";
     import SettingsPageCount from "./settings/settings-page-count.svelte";
-    import { onMount } from "svelte";
 
     const inputFocusClass = "focus:border-gray-500 focus:ring-gray-500";
 
