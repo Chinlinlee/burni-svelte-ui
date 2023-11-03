@@ -6,5 +6,5 @@ export interface Settings {
     resourceType: string;
     token: string;
     parameters: SearchParameter[];
-    displays: SearchParameter[];
+    result: SearchParameter[];
 }

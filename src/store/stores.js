@@ -7,7 +7,7 @@ export const settings = writable({
     token: "",
     /** @type {import("../models/search-parameters.d").SearchParameter[] } */
     parameters: [],
-    displays: [{
+    result: [{
         code: "_count",
         value: "20",
         display: "",
