@@ -8,6 +8,7 @@
     import SearchResultHeader from "../../components/search-result/search-result-header.svelte";
     import SearchingJsonViewSkeleton from "../../components/search-result/searching-json-view-skeleton.svelte";
     import SearchingGridViewSkeleton from "../../components/search-result/searching-grid-view-skeleton.svelte";
+    import { Alert } from "flowbite-svelte";
 
     let fetchFhirResourcesData = doFetchFhirResourcesData();
     /** @type {any | undefined}*/
@@ -90,6 +91,9 @@
             </section>
         </div>
     {:catch e}
-        {e.message}
+        <Alert class="text-center">
+            <span class="font-medium">{e.message}</span>
+        </Alert>
+        
     {/await}
 </section>
