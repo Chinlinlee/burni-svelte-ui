@@ -22,7 +22,7 @@
                     <svelte:self inputArray={item} key={index} />
                 {:else}
                     <p class="px-2 py-1">{index + 1}.</p>
-                    <ObjectComponent data={item} />
+                    <ObjectComponent data={item} field={index} />
                 {/if}
             {/each}
         </AccordionItem>
