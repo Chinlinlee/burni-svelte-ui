@@ -18,16 +18,16 @@
         let urlParam = new URLSearchParams();
 
         if (aSettings.id) {
-            searchUrl.update((v) => (v = urlJoin(aSearchUrl, aSettings.id)));
+            searchUrl.update((v) => (v = urlJoin(aSearchUrl.trim(), aSettings.id.trim())));
             // Disabled parameters section
             doDisabledAllSearchParameterElements();
         } else if (aSettings.parameters.length > 0) {
             doEnabledAllSearchParameterElements();
             appendSearchParameters(urlParam);
+            appendResultUrlSearchParameter(urlParam);
+            searchUrl.set(aSearchUrl + `?${urlParam.toString()}`);
         }
 
-        appendResultUrlSearchParameter(urlParam);
-        searchUrl.set(aSearchUrl + `?${urlParam.toString()}`);
         searchUrl.update((v) => (v = decodeURIComponent(aSearchUrl)));
     };
 
