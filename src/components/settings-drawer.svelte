@@ -17,6 +17,7 @@
     import SettingsSearchParameter from "./settings-search-parameter.svelte";
     import { isUrlValid } from "$lib";
     import { changeNavSearchUrl } from "../helper/nav-search-url.svelte";
+    import SettingsPageCount from "./settings/settings-page-count.svelte";
 
     const inputFocusClass = "focus:border-gray-500 focus:ring-gray-500";
 
@@ -51,7 +52,7 @@
             if (isUrlValid($settings.server)) {
                 $disabledNavSearchButton = false;
             }
-            
+
             changeNavSearchUrl();
         }
     }
@@ -92,7 +93,7 @@
         </h5>
         <CloseButton on:click={() => (hidden = true)} class="mb-4 dark:text-white" />
     </div>
-    <div class="mb-6 settings-server">
+    <div class="mb-4 settings-server rounded-lg border-gray-300 border-2 p-2">
         <Label for="server" class="block mb-2 text-gray-600">Server</Label>
         <Input
             id="server"
@@ -104,7 +105,7 @@
             class={inputFocusClass}
         />
     </div>
-    <div class="mb-6 settings-resource-instance">
+    <div class="mb-4 settings-resource-instance rounded-lg border-gray-300 border-2 p-2">
         <Label for="resourceInstance" class="block mb-2 text-gray-600">Resource / ID</Label>
         <ButtonGroup class="w-full">
             <Button
@@ -151,7 +152,7 @@
         </ButtonGroup>
     </div>
 
-    <div class="mb-6 settings-token">
+    <div class="mb-4 settings-token rounded-lg border-gray-300 border-2 p-2">
         <Label for="token" class="block mb-2 text-gray-600">Token</Label>
         <Input
             id="token"
@@ -161,7 +162,7 @@
         />
     </div>
 
-    <div class="settings-parameters">
+    <div class="mb-4 settings-parameters rounded-lg border-gray-300 border-2 p-2">
         <Label for="search-parameters" class="block mb-2 text-gray-600">Parameters</Label>
         <div class="add-section mb-4">
             <SettingsSearchParameter
@@ -189,11 +190,21 @@
         {/if}
     </div>
 
-    <div class="settings-layout">
+    <div class="mb-4 settings-layout rounded-lg border-gray-300 border-2 p-2">
         <Label class="block mb-2 text-gray-600">Layout</Label>
         <div class="flex flex-wrap justify-between">
-            <Button color="{$settings.layout === 'grid' ? 'primary' : 'none'}" on:click={() => ($settings.layout = 'grid')}>Grid</Button>
-            <Button color="{$settings.layout === 'json-viewer' ? 'primary' : 'none'}" on:click={() => ($settings.layout = 'json-viewer')}>JSON Viewer</Button>
+            <Button
+                color={$settings.layout === "grid" ? "primary" : "none"}
+                on:click={() => ($settings.layout = "grid")}>Grid</Button
+            >
+            <Button
+                color={$settings.layout === "json-viewer" ? "primary" : "none"}
+                on:click={() => ($settings.layout = "json-viewer")}>JSON Viewer</Button
+            >
         </div>
+    </div>
+
+    <div class="mb-4 settings-page-count rounded-lg border-gray-300 border-2 p-2">
+        <SettingsPageCount bind:count={$settings.result[0].value} />
     </div>
 </Drawer>

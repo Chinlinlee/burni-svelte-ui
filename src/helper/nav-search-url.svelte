@@ -15,6 +15,7 @@
 
     export const changeNavSearchUrl = function () {
         searchUrl.set(urlJoin(aSettings.server, aSettings.resourceType));
+        let urlParam = new URLSearchParams();
 
         if (aSettings.id) {
             searchUrl.update((v) => (v = urlJoin(aSearchUrl, aSettings.id)));
@@ -22,8 +23,11 @@
             doDisabledAllSearchParameterElements();
         } else if (aSettings.parameters.length > 0) {
             doEnabledAllSearchParameterElements();
-            appendSearchParameters();
+            appendSearchParameters(urlParam);
         }
+
+        appendResultUrlSearchParameter(urlParam);
+        searchUrl.set(aSearchUrl + `?${urlParam.toString()}`);
         searchUrl.update((v) => (v = decodeURIComponent(aSearchUrl)));
     };
 
@@ -53,21 +57,34 @@
         });
     }
 
-    function appendSearchParameters() {
+    /**
+     *
+     * @param {URLSearchParams} urlSearchParams
+     */
+    function appendSearchParameters(urlSearchParams) {
         // When parameters is not empty and there is no id
-        let urlParam = new URLSearchParams();
         aSettings.parameters.forEach((param) => {
             if (param.modifier) {
                 if (["string", "token", "uri"].includes(param.type)) {
-                    urlParam.append(`${param.code}:${param.modifier}`, param.value);
+                    urlSearchParams.append(`${param.code}:${param.modifier}`, param.value);
                 } else {
-                    urlParam.append(param.code, `${param.modifier}${param.value}`);
+                    urlSearchParams.append(param.code, `${param.modifier}${param.value}`);
                 }
             } else {
-                urlParam.append(param.code, param.value);
+                urlSearchParams.append(param.code, param.value);
             }
         });
+    }
 
-        searchUrl.set(aSearchUrl + `?${urlParam.toString()}`);
+    /**
+     *
+     * @param {URLSearchParams} urlSearchParams
+     */
+    function appendResultUrlSearchParameter(urlSearchParams) {
+        aSettings.result.forEach((param) => {
+            urlSearchParams.append(param.code, param.value);
+        });
+
+        return urlSearchParams;
     }
 </script>
