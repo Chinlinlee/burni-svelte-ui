@@ -6,6 +6,8 @@
     import JsonView from "../../components/search-result/json-view.svelte";
     import GridView from "../../components/search-result/grid-view.svelte";
     import SearchResultHeader from "../../components/search-result/search-result-header.svelte";
+    import SearchingJsonViewSkeleton from "../../components/search-result/searching-json-view-skeleton.svelte";
+    import SearchingGridViewSkeleton from "../../components/search-result/searching-grid-view-skeleton.svelte";
 
     let fetchFhirResourcesData = doFetchFhirResourcesData();
     /** @type {any | undefined}*/
@@ -53,15 +55,18 @@
 
 <section class="container mx-auto mt-2">
     {#await fetchFhirResourcesData}
-        <p>waiting...</p>
+        <div class:hidden={$settings.layout !== "json-viewer"}>
+            <SearchingJsonViewSkeleton />
+        </div>
+        <div class:hidden={$settings.layout !== "grid"}>
+            <SearchingGridViewSkeleton />
+        </div>
     {:then fhirResources}
         <SearchResultHeader
             bind:fetchedFhirResource
             bind:fetchFhirResourcesData
             {doFetchFhirResourcesData}
-        >
-
-        </SearchResultHeader>
+        />
         <div class="layout-json-viewer">
             <section class="search-result-body">
                 {#if fetchedFhirResource?.resourceType === "Bundle"}
