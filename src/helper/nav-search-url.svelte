@@ -21,7 +21,7 @@
             searchUrl.update((v) => (v = urlJoin(aSearchUrl.trim(), aSettings.id.trim())));
             // Disabled parameters section
             doDisabledAllSearchParameterElements();
-        } else if (aSettings.parameters.length > 0) {
+        } else {
             doEnabledAllSearchParameterElements();
             appendSearchParameters(urlParam);
             appendResultUrlSearchParameter(urlParam);
