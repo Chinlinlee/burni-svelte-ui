@@ -93,7 +93,8 @@
             /** @type { HTMLElement | null} */
             let selectElement = document.getElementById("select-page-count");
             if (selectElement) {
-                 /** @type {HTMLSelectElement} */ (selectElement).value = "10";
+                 (/** @type {HTMLSelectElement} */ (selectElement)).selectedIndex = 1;
+                 
                  clearInterval(defaultInterval);
             }
         });
