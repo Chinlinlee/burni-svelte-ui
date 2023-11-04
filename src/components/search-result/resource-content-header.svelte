@@ -1,6 +1,7 @@
 <script>
     import { Button } from "flowbite-svelte";
     import ResourceEditor from "./resource-editor.svelte";
+    import DeleteButton from "./resource-instance-header/delete-button.svelte";
 
     /** @type {boolean} */
     export let openResourceEditorBoolean = false;
@@ -21,5 +22,10 @@
         >
         Edit
     </Button>
-    <ResourceEditor bind:open={openResourceEditorBoolean} resource={resource} />
+    <ResourceEditor bind:open={openResourceEditorBoolean} {resource} />
+
+    <DeleteButton
+        resourceType={resource?.resourceType}
+        resourceId={resource?.id}
+    ></DeleteButton>
 </div>
