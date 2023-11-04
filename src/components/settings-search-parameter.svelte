@@ -6,6 +6,7 @@
     import { ResourceSearchParameter } from "$lib/fhir/resource-search-parameter";
 
     import { settings } from "../store/stores";
+    import SettingsSearchParameterDropdown from "./settings-search-parameter-dropdown.svelte";
 
     const inputFocusClass = "focus:border-gray-500 focus:ring-gray-500";
 
@@ -21,7 +22,7 @@
         modifier: "",
         type: ""
     };
-    export let curSearchParameter = {...initSearchParameter};
+    export let curSearchParameter = { ...initSearchParameter };
 
     let openSearchParameterDropDown = false;
     let openModifierDropDown = false;
@@ -50,10 +51,9 @@
         openModifierDropDown = false;
 
         let indexNum = Number(index);
-        if (Number.isInteger(indexNum) && indexNum >=0) {
+        if (Number.isInteger(indexNum) && indexNum >= 0) {
             $settings.parameters[indexNum] = curSearchParameter;
         }
-            
     }
 
     function removeSearchParameter() {
@@ -79,7 +79,7 @@
 
         $settings.parameters = $settings.parameters;
 
-        curSearchParameter = {...initSearchParameter};
+        curSearchParameter = { ...initSearchParameter };
     }
 </script>
 
@@ -88,34 +88,12 @@
         <Button class="w-1/3">
             <span>{curSearchParameter.code}</span>
         </Button>
-        <Dropdown
-            class="dropdown-search-parameters min-w-[10rem] overflow-y-auto max-h-64"
-            bind:open={openSearchParameterDropDown}
-        >
-            <div class="pl-4 py-2 border-b-2 font-bold">
-                <span>{selectedResourceType}</span>
-            </div>
-            {#each Object.entries(ResourceSearchParameter.getResourceSearchParameters(selectedResourceType)) as [param, paramInfo]}
-                <DropdownItem
-                    class="pl-6"
-                    on:click={() => {
-                        onSelectSearchParameter(param, paramInfo);
-                    }}>{param}</DropdownItem
-                >
-            {/each}
 
-            <div class="pl-4 py-2 border-b-2 font-bold">
-                <span>_common</span>
-            </div>
-            {#each Object.entries(ResourceSearchParameter.getResourceSearchParameters("_common")) as [param, paramInfo]}
-                <DropdownItem
-                    class="pl-6"
-                    on:click={() => {
-                        onSelectSearchParameter(param, paramInfo);
-                    }}>{param}</DropdownItem
-                >
-            {/each}
-        </Dropdown>
+        <SettingsSearchParameterDropdown
+            resourceTypes={[selectedResourceType, "_common", "_result"]}
+            bind:openSearchParameterDropDown
+            {onSelectSearchParameter}
+        />
 
         <Button>
             {@html curSearchParameter.display}
