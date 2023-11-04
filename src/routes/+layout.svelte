@@ -23,10 +23,6 @@
         hideSettingsDrawer = false;
     }
 
-    function onClickDisplay() {
-        console.log("Click Display");
-    }
-
     function onClickCreate() {
         console.log("Click Create");
     }
@@ -95,9 +91,6 @@
 
                     <NavLi class="cursor-pointer translate-y-1/2" href="" on:click={onClickSettings}
                         >Settings</NavLi
-                    >
-                    <NavLi class="cursor-pointer translate-y-1/2" href="" on:click={onClickDisplay}
-                        >Display</NavLi
                     >
                     <NavLi class="cursor-pointer translate-y-1/2" href="" on:click={onClickCreate}
                         >Create</NavLi
