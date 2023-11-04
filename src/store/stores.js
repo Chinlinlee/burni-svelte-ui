@@ -9,7 +9,7 @@ export const settings = writable({
     parameters: [],
     result: [{
         code: "_count",
-        value: "20",
+        value: "10",
         display: "",
         modifier: "",
         type: "number",

@@ -18,6 +18,7 @@
     import { isUrlValid } from "$lib";
     import { changeNavSearchUrl } from "../helper/nav-search-url.svelte";
     import SettingsPageCount from "./settings/settings-page-count.svelte";
+    import { onMount } from "svelte";
 
     const inputFocusClass = "focus:border-gray-500 focus:ring-gray-500";
 
@@ -75,21 +76,27 @@
 
     /**
      *
-     * @param {string} resourceType
-     */
-    function getResourceSearchParameters(resourceType) {
-        // @ts-ignore
-        return config.config.searchParameters[resourceType];
-    }
-
-    /**
-     * 
      * @param {KeyboardEvent} e
      */
     function onSelfKeyPress(e) {
         if (e.code === "Enter") {
             hidden = true;
         }
+    }
+
+    onMount(() => {
+        defaultPageCountTo10();
+    });
+
+    function defaultPageCountTo10() {
+        let defaultInterval = setInterval(() => {
+            /** @type { HTMLElement | null} */
+            let selectElement = document.getElementById("select-page-count");
+            if (selectElement) {
+                 /** @type {HTMLSelectElement} */ (selectElement).value = "10";
+                 clearInterval(defaultInterval);
+            }
+        });
     }
 </script>
 
@@ -127,7 +134,7 @@
                         class="w-3 h-3 ml-2 text-gray-500 dark:text-white"
                     />
                 </Button>
-    
+
                 <Dropdown bind:open={openResourceTypesDropDown} class="overflow-y-auto max-h-64">
                     <div class="p-2">
                         <Input
@@ -143,7 +150,7 @@
                             />
                         </Input>
                     </div>
-    
+
                     {#each config.config.resourceTypes as resourceType}
                         {#if resourceType.toLowerCase().includes(searchResourceType.toLowerCase())}
                             <DropdownItem on:click={() => onSelectResourceType(resourceType)}
@@ -162,7 +169,7 @@
                 />
             </ButtonGroup>
         </div>
-    
+
         <div class="mb-4 settings-token rounded-lg border-gray-300 border-2 p-2">
             <Label for="token" class="block mb-2 text-gray-600">Token</Label>
             <Input
@@ -172,7 +179,7 @@
                 class={inputFocusClass}
             />
         </div>
-    
+
         <div class="mb-4 settings-parameters rounded-lg border-gray-300 border-2 p-2">
             <Label for="search-parameters" class="block mb-2 text-gray-600">Parameters</Label>
             <div class="add-section mb-4">
@@ -188,7 +195,7 @@
                     index={undefined}
                 />
             </div>
-    
+
             {#if !$settings.id}
                 {#each $settings.parameters as param, i}
                     <SettingsSearchParameter
@@ -200,7 +207,7 @@
                 {/each}
             {/if}
         </div>
-    
+
         <div class="mb-4 settings-layout rounded-lg border-gray-300 border-2 p-2">
             <Label class="block mb-2 text-gray-600">Layout</Label>
             <div class="flex flex-wrap justify-between">
@@ -214,10 +221,9 @@
                 >
             </div>
         </div>
-    
+
         <div class="mb-4 settings-page-count rounded-lg border-gray-300 border-2 p-2">
             <SettingsPageCount bind:count={$settings.result[0].value} />
         </div>
     </Drawer>
 </div>
-
