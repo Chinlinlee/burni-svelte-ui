@@ -3,6 +3,7 @@
     // @ts-ignore
     import { isUndefined } from "lodash";
     import config from "$lib/fhir/config";
+    import { ResourceSearchParameter } from "$lib/fhir/resource-search-parameter";
 
     import { settings } from "../store/stores";
 
@@ -26,25 +27,6 @@
     let openModifierDropDown = false;
 
     let showValueForSearchParameterRequired = false;
-
-    /**
-     *
-     * @param {string} resourceType
-     */
-    function getResourceSearchParameters(resourceType) {
-        // @ts-ignore
-        return config.config.searchParameters[resourceType];
-    }
-
-    /**
-     *
-     * @param {string} param
-     */
-    function getSearchParameterModifier(param) {
-        let paramInfo = getResourceSearchParameters(selectedResourceType)?.[param];
-        // @ts-ignore
-        return config.config.searchParameterModifiers[paramInfo.type];
-    }
 
     /**
      *
@@ -113,7 +95,7 @@
             <div class="pl-4 py-2 border-b-2 font-bold">
                 <span>{selectedResourceType}</span>
             </div>
-            {#each Object.entries(getResourceSearchParameters(selectedResourceType)) as [param, paramInfo]}
+            {#each Object.entries(ResourceSearchParameter.getResourceSearchParameters(selectedResourceType)) as [param, paramInfo]}
                 <DropdownItem
                     class="pl-6"
                     on:click={() => {
@@ -125,7 +107,7 @@
             <div class="pl-4 py-2 border-b-2 font-bold">
                 <span>_common</span>
             </div>
-            {#each Object.entries(getResourceSearchParameters("_common")) as [param, paramInfo]}
+            {#each Object.entries(ResourceSearchParameter.getResourceSearchParameters("_common")) as [param, paramInfo]}
                 <DropdownItem
                     class="pl-6"
                     on:click={() => {
@@ -140,7 +122,7 @@
         </Button>
         {#if curSearchParameter.code !== "Choose Parameters"}
             <Dropdown bind:open={openModifierDropDown} class="overflow-y-auto max-h-64">
-                {#each Object.entries(getSearchParameterModifier(curSearchParameter.code)) as [modifierPrefix, modifierInfo]}
+                {#each Object.entries(ResourceSearchParameter.getSearchParameterModifier(selectedResourceType, curSearchParameter.code)) as [modifierPrefix, modifierInfo]}
                     <DropdownItem
                         on:click={() => {
                             onSelectModifierForSearchParameter(modifierPrefix, modifierInfo);
