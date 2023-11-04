@@ -7264,10 +7264,6 @@ export default {
                     "type": "string",
                     "description": "Order to sort results in (can repeat for inner sort orders)"
                 },
-                "_count": {
-                    "type": "number",
-                    "description": "Number of results per page"
-                },
                 "_summary": {
                     "type": "string",
                     "description": "Just return the summary elements (for resources where this is defined)",

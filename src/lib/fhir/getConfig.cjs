@@ -44,7 +44,6 @@ function setSearchParameters() {
         },
         "_result": {
             '_sort': { "type": "string", "description": "Order to sort results in (can repeat for inner sort orders)" },
-            '_count': { "type": "number", "description": "Number of results per page" },
             '_summary': { "type": "string", "description": "Just return the summary elements (for resources where this is defined)", "code": ['true', 'false'] },
             '_total': { "type": "string", "description": "", "code": ['none', 'estimate', 'accurate'] },
             '_include': { "type": "string", "description": "Other resources to include in the search results that search matches point to" },
