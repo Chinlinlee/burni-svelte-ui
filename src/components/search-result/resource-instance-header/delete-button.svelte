@@ -13,6 +13,7 @@
     export let resourceType;
     /** @type {string}*/
     export let resourceId;
+    export let isIconButton = false;
 
     async function deleteResource() {
         openLoadingModal = true;
@@ -42,21 +43,39 @@
     }
 </script>
 
-<Button
-    class="mb-2 text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-torch-red-400 hover:bg-torch-red-500 dark:bg-torch-red-600 dark:hover:bg-torch-red-700 focus:ring-torch-red-300 dark:focus:ring-torch-red-900 rounded-lg"
-    on:click={onDeleteButtonClick}
->
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        class="w-5 h-5 mr-1"
-        fill="currentColor"
-        ><title>delete</title><path
-            d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
-        /></svg
+{#if isIconButton}
+    <Button
+        color="light"
+        on:click={onDeleteButtonClick}
+        class="px-1 py-1 border-none"
     >
-    Delete
-</Button>
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="w-5 h-5"
+            fill="currentColor"
+            ><title>delete-resource</title><path
+                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+            /></svg
+        >
+    </Button>
+{:else}
+    <Button
+        class="mb-2 text-center font-medium focus:ring-4 focus:outline-none inline-flex items-center justify-center px-5 py-2.5 text-sm text-white bg-torch-red-400 hover:bg-torch-red-500 dark:bg-torch-red-600 dark:hover:bg-torch-red-700 focus:ring-torch-red-300 dark:focus:ring-torch-red-900 rounded-lg"
+        on:click={onDeleteButtonClick}
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="w-5 h-5 mr-1"
+            fill="currentColor"
+            ><title>delete-resource</title><path
+                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"
+            /></svg
+        >
+        Delete
+    </Button>
+{/if}
 
 <Modal bind:open={openDeletePopUp} on:close={() => (openDeletePopUp = false)} size="sm">
     <div class="text-red-500 text-center mx-auto">
