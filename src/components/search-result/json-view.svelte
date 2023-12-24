@@ -22,12 +22,13 @@
 
 <div class="grid grid-cols-1 gap-4">
     {#each entry as entry, i}
-        <ResourceContentHeader bind:openResourceEditorBoolean={openResourceEditorBooleans[i]} resource={entry?.resource}></ResourceContentHeader>
+        
         <div class="resource-content-body">
             <Card class="w-full max-w-[100%]">
                 <h3 class="text-xl font-bold">
                     {entry?.resource?.resourceType} / {entry?.resource?.id}
                 </h3>
+                <ResourceContentHeader bind:openResourceEditorBoolean={openResourceEditorBooleans[i]} resource={entry?.resource}></ResourceContentHeader>
                 <div>
                     <JSONEditor
                         content={{
