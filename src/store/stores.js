@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
+import { persisted } from "svelte-persisted-store";
 
-export const settings = writable({
+export const settings = persisted("burni-ui-settings", {
     server: "https://hapi.fhir.tw/fhir",
     id: "",
     resourceType: "Patient",

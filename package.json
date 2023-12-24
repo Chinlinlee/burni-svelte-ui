@@ -39,6 +39,7 @@
         "jsonpath-plus": "^7.2.0",
         "lodash": "^4.17.21",
         "svelte-jsoneditor": "^0.18.10",
+        "svelte-persisted-store": "^0.8.0",
         "uid": "^2.0.2"
     }
 }
