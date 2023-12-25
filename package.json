@@ -34,11 +34,11 @@
     },
     "type": "module",
     "dependencies": {
-        "axios": "^1.5.1",
+        "axios": "^1.6.2",
         "flat": "^6.0.1",
         "jsonpath-plus": "^7.2.0",
         "lodash": "^4.17.21",
-        "svelte-jsoneditor": "^0.18.10",
+        "svelte-jsoneditor": "^0.20.0",
         "svelte-persisted-store": "^0.8.0",
         "uid": "^2.0.2"
     }

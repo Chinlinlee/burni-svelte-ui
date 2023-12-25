@@ -41,13 +41,19 @@
         openLoadingModal = false;
         openDeletePopUp = false;
     }
+
+    function openErrorModal() {
+        openLoadingModal = false;
+        openDeletePopUp = false;
+        return true;
+    }
 </script>
 
 {#if isIconButton}
     <Button
         color="light"
         on:click={onDeleteButtonClick}
-        class="px-1 py-1 border-none"
+        class="px-1 py-1 border-none btn-delete-resource"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -105,6 +111,13 @@
 
 {#await deleteResourcePromise}
     <LoadingModal bind:openLoadingModal />
+{:catch e}
+    <Modal autoclose size="xs" open={openErrorModal()}>
+        <div class="text-center">
+            <h3>{e.message}</h3>
+            <Button>OK</Button>
+        </div>
+    </Modal>
 {/await}
 
 <Modal bind:open={showDeleteSuccessModal} size="xs" autoclose>
