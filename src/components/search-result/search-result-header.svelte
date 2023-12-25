@@ -6,7 +6,7 @@
     export let fetchedFhirResource;
     /** @type {Promise<any>} */
     export let fetchFhirResourcesData;
-    /** @type {()=> Promise<void>}  */
+    /** @type {(url:string)=> Promise<void>}  */
     export let doFetchFhirResourcesData;
 
     function viewFetchedFhirResource() {
@@ -37,16 +37,14 @@
     function paginationPrevious() {
         let previousUrl = getPreviousUrlInBundle();
         if (previousUrl) {
-            $searchUrl = previousUrl;
-            fetchFhirResourcesData = doFetchFhirResourcesData();
+            fetchFhirResourcesData = doFetchFhirResourcesData(previousUrl);
         }
     }
 
     async function paginationNext() {
         let nextUrl = getNextUrlInBundle();
         if (nextUrl) {
-            $searchUrl = nextUrl;
-            fetchFhirResourcesData = doFetchFhirResourcesData();
+            fetchFhirResourcesData = doFetchFhirResourcesData(nextUrl);
         }
     }
 

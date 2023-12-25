@@ -13,15 +13,19 @@
     /** @type {boolean[]} */
     let openResourceEditorBooleans = [];
     
-    let fetchFhirResourcesData = doFetchFhirResourcesData();
+    let fetchFhirResourcesData = doFetchFhirResourcesData($searchUrl);
     /** @type {any | undefined}*/
     let fetchedFhirResource;
     
 
-    $: $clickSearchCounter, (fetchFhirResourcesData = doFetchFhirResourcesData());
+    $: $clickSearchCounter, (fetchFhirResourcesData = doFetchFhirResourcesData($searchUrl));
 
-    async function doFetchFhirResourcesData() {
-        if (!isUrlValid($searchUrl)) return;
+    /**
+     * 
+     * @param {string} url
+     */
+    async function doFetchFhirResourcesData(url) {
+        if (!isUrlValid(url)) return;
 
         openResourceEditorBooleans = [];
         openResourceEditorBooleans.length = 0;
@@ -35,7 +39,7 @@
                 }
             };
         }
-        const response = await axios.get($searchUrl, option);
+        const response = await axios.get(url, option);
         fetchedFhirResource = response.data;
         changeSingleResourceToBundle();
         return response.data;
