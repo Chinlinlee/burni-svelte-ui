@@ -4,7 +4,7 @@
     import axios from "axios";
     import { isUrlValid } from "$lib/index";
     import JsonView from "../../components/search-result/json-view.svelte";
-    import GridView from "../../components/search-result/grid-view.svelte";
+    import TableView from "../../components/search-result/table-view.svelte";
     import SearchResultHeader from "../../components/search-result/search-result-header.svelte";
     import SearchingJsonViewSkeleton from "../../components/search-result/searching-json-view-skeleton.svelte";
     import SearchingGridViewSkeleton from "../../components/search-result/searching-grid-view-skeleton.svelte";
@@ -86,7 +86,7 @@
                                 ? ''
                                 : 'hidden'}"
                         >
-                            <GridView entry={fetchedFhirResource?.entry} />
+                            <TableView entry={fetchedFhirResource?.entry} />
                         </div>
                     {/if}
                 {/if}
