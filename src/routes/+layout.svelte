@@ -1,6 +1,11 @@
 <script>
     import "../app.postcss";
-    import { disabledNavSearchButton, searchUrl, clickSearchCounter } from "../store/stores";
+    import {
+        disabledNavSearchButton,
+        searchUrl,
+        clickSearchCounter,
+        settings
+    } from "../store/stores";
     import {
         Navbar,
         NavBrand,
@@ -14,6 +19,9 @@
 
     import { goto } from "$app/navigation";
     import SettingsDrawer from "../components/settings-drawer.svelte";
+    import { onMount } from "svelte";
+    import { changeNavSearchUrl } from "../helper/nav-search-url.svelte";
+    import { isUrlValid } from "$lib";
 
     let hideSettingsDrawer = true;
     /** @type {HTMLButtonElement} */
@@ -35,8 +43,7 @@
     }
 
     function onScroll() {
-        if (document.body.scrollTop > 20 ||
-            document.documentElement.scrollTop > 20) {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
             backToTopBtn.classList.remove("hidden");
         } else {
             backToTopBtn.classList.add("hidden");
@@ -49,11 +56,17 @@
             behavior: "auto"
         });
     }
+    $: {
+        if (isUrlValid($settings.server)) {
+            $disabledNavSearchButton = false;
+        }
+    }
+    onMount(() => {
+        changeNavSearchUrl();
+    });
 </script>
 
-<svelte:window 
-    on:scroll={onScroll}
-/>
+<svelte:window on:scroll={onScroll} />
 
 <header class="sticky top-0 z-40 flex-none w-full mx-auto bg-white border-b">
     <div class="mx-auto flex flex-wrap items-center w-full">
@@ -130,5 +143,4 @@
             />
         </svg>
     </button>
-
 </main>

@@ -28,7 +28,6 @@
         duration: 200,
         easing: sineIn
     };
-    let server = "";
     let openResourceTypesDropDown = false;
     let selectedResourceType = "Patient";
     let searchResourceType = "";
@@ -59,13 +58,6 @@
     }
 
     /**
-     * @param {any} e
-     */
-    function onServerKeyUp(e) {
-        $settings.server = server;
-    }
-
-    /**
      *
      * @param {string} resourceType
      */
@@ -80,6 +72,7 @@
      */
     function onSelfKeyPress(e) {
         if (e.code === "Enter") {
+            onSettingsChange();
             hidden = true;
         }
     }
@@ -119,8 +112,7 @@
                 name="server"
                 required
                 placeholder=""
-                on:keyup={onServerKeyUp}
-                bind:value={server}
+                bind:value={$settings.server}
                 class={inputFocusClass}
             />
         </div>
