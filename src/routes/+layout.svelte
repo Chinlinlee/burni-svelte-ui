@@ -31,10 +31,6 @@
         hideSettingsDrawer = false;
     }
 
-    function onClickCreate() {
-        console.log("Click Create");
-    }
-
     function onClickSearch() {
         goto("search-result", {
             invalidateAll: true
@@ -105,7 +101,7 @@
                     <NavLi class="cursor-pointer translate-y-1/2" href="" on:click={onClickSettings}
                         >Settings</NavLi
                     >
-                    <NavLi class="cursor-pointer translate-y-1/2" href="" on:click={onClickCreate}
+                    <NavLi class="cursor-pointer translate-y-1/2" href="/create-resource"
                         >Create</NavLi
                     >
                 </NavUl>
