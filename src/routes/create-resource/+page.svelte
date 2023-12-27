@@ -2,12 +2,14 @@
     import { settings } from "../../store/stores";
     import axios from "axios";
 
-    import { Input, Label, Button, Alert } from "flowbite-svelte";
+    import { Input, Label, Button, Alert, Toast } from "flowbite-svelte";
     import { JSONEditor, Mode } from "svelte-jsoneditor";
     import { Highlight, LineNumbers } from "svelte-highlight";
     import { json } from "svelte-highlight/languages/json";
     import edgeLight from "svelte-highlight/styles/edge-light";
     import LoadingModal from "../../components/loading-modal.svelte";
+    import { fly } from "svelte/transition";
+    import { CheckCircleSolid } from "flowbite-svelte-icons";
 
     /** @type { Promise<any> }*/
     let createResourcePromise;
@@ -17,7 +19,9 @@
     let errorMessage = "";
 
     let openLoadingModal = false;
-    let openSuccessInfoModal = false;
+    let openCreatedSuccessfulToast = false;
+    let openRequestCreatingResourceSection = true;
+    let openResponseCreatedResourceSection = false;
 
     async function createResource() {
         try {
@@ -27,7 +31,7 @@
             let postUrl = resourceId
                 ? `${$settings.server}/${editorResource.resourceType}/${resourceId}`
                 : `${$settings.server}/${editorResource.resourceType}`;
-            
+
             let res;
             if (resourceId) {
                 editorResource.id = resourceId;
@@ -36,7 +40,10 @@
                 res = await axios.post(postUrl, editorResource);
             }
             openLoadingModal = false;
-            openSuccessInfoModal = true;
+            setTimeout(() => {
+                openCreatedSuccessfulToast = true;
+            }, 250);
+            autoHideCreatedSuccessfulToast();
             errorMessage = "";
             return res.data;
         } catch (e) {
@@ -66,6 +73,16 @@
             }
         });
     }
+
+    function autoHideCreatedSuccessfulToast() {
+        setTimeout(() => {
+            openCreatedSuccessfulToast = false;
+        }, 3000);
+    }
+
+    function toggleRequestCreatingResourceSection() {
+        openRequestCreatingResourceSection = !openRequestCreatingResourceSection;
+    }
 </script>
 
 <svelte:head>
@@ -73,28 +90,61 @@
 </svelte:head>
 
 <section class="container create-resource-section mx-auto flex flex-row flex-wrap">
-    <h3 class="text-xl font-bold mb-4">Request Creating Resource</h3>
-    <section class="flex mb-4 w-full">
-        <Label for="create-resource-id" class="block mb-2" />
-        <Input
-            id="create-resoruce-id"
-            bind:value={resourceId}
-            placeholder="resource id (optional)"
-        />
-    </section>
+    <button
+        class="float-left relative cursor-pointer flex"
+        on:click={toggleRequestCreatingResourceSection}
+    >
+        {#if openRequestCreatingResourceSection}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"
+                ><title>collapse</title><path
+                    d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"
+                /></svg
+            >
+        {:else}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"
+                ><title>expand</title><path
+                    d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+                /></svg
+            >
+        {/if}
+        <h3 class="text-xl font-bold mb-4">Request Creating Resource</h3>
+    </button>
+    <section
+        class="flex flex-wrap flex-row w-full {openRequestCreatingResourceSection
+            ? 'section-visible'
+            : 'section-invisible'}"
+        id="section-request-creating-resource"
+    >
+        <section class="flex mb-4 w-full">
+            <Label for="create-resource-id" class="block mb-2" />
+            <Input
+                id="create-resoruce-id"
+                bind:value={resourceId}
+                placeholder="resource id (optional)"
+            />
+        </section>
 
-    <section class="flex mb-4 w-full" id="request-creating-resource-section">
-        <JSONEditor
-            content={{ text: "" }}
-            mode={Mode.text}
-            escapeControlCharacters={true}
-            bind:this={jsonEditorForCreate}
-        />
-    </section>
+        <section class="flex mb-4 w-full" id="request-creating-resource-section">
+            <JSONEditor
+                content={{ text: "" }}
+                mode={Mode.text}
+                escapeControlCharacters={true}
+                bind:this={jsonEditorForCreate}
+            />
+        </section>
 
-    <section class="flex mb-4 justify-end w-full gap-2" id="operations-section">
-        <Button on:click={() => (createResourcePromise = createResource())}>Create</Button>
-        <Button color="light" on:click={reset}>Reset</Button>
+        <section class="flex mb-4 justify-end w-full gap-2" id="operations-section">
+            <Button
+                on:click={() => (
+                    (openLoadingModal = true), (createResourcePromise = createResource())
+                )}>Create</Button
+            >
+            <Button color="light" on:click={reset}>Reset</Button>
+        </section>
+
+        <section class="flex mb-4 w-full {errorMessage ? '' : 'hidden'}" id="error-message-section">
+            <Alert class="font-medium w-full text-center">{errorMessage}</Alert>
+        </section>
     </section>
 
     {#if createResourcePromise}
@@ -104,13 +154,38 @@
             <section class="flex flex-wrap flex-row w-full" id="response-created-resource-section">
                 <h3 class="text-xl font-bold mb-4">Response Created Resource</h3>
                 <Highlight language={json} code={JSON.stringify(data, null, 2)} let:highlighted>
-                    <LineNumbers {highlighted} wrapLines></LineNumbers>
+                    <LineNumbers {highlighted} wrapLines />
                 </Highlight>
             </section>
         {/await}
     {/if}
-
-    <section class="flex mb-4 w-full {errorMessage ? '' : 'hidden'}" id="error-message-section">
-        <Alert class="font-medium w-full text-center">{errorMessage}</Alert>
-    </section>
 </section>
+
+<Toast
+    color="green"
+    id="toast-created-successful"
+    transition={fly}
+    bind:open={openCreatedSuccessfulToast}
+    position="top-right"
+    class="fixed top-28 right-5"
+>
+    <svelte:fragment slot="icon">
+        <CheckCircleSolid class="w-5 h-5" />
+        <span class="sr-only">Successful Icon</span>
+    </svelte:fragment>
+    Create resource successful.
+</Toast>
+
+<style>
+    .section-visible {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 0s, all 0.5s linear;
+    }
+
+    .section-invisible {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s, all 0.5s linear;
+    }
+</style>
