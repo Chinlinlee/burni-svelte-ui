@@ -21,7 +21,7 @@
     let openLoadingModal = false;
     let openCreatedSuccessfulToast = false;
     let openRequestCreatingResourceSection = true;
-    let openResponseCreatedResourceSection = false;
+    let openResponseCreatedResourceSection = true;
 
     async function createResource() {
         try {
@@ -82,6 +82,40 @@
 
     function toggleRequestCreatingResourceSection() {
         openRequestCreatingResourceSection = !openRequestCreatingResourceSection;
+        doAnimationForSection(
+            openRequestCreatingResourceSection,
+            "section-request-creating-resource"
+        );
+    }
+
+    function toggleResponseCreatedResourceSection() {
+        openResponseCreatedResourceSection = !openResponseCreatedResourceSection;
+        doAnimationForSection(
+            openResponseCreatedResourceSection,
+            "section-response-created-resource"
+        );
+    }
+
+    /**
+     *
+     * @param {boolean} isOpen
+     * @param {string} elementId
+     */
+    function doAnimationForSection(isOpen, elementId) {
+        let element = document.getElementById(elementId);
+        if (isOpen) {
+            element?.classList.remove("hidden");
+            setTimeout(() => {
+                element?.classList.remove("section-invisible");
+                element?.classList.add("section-visible");
+            });
+        } else {
+            element?.classList.add("section-invisible");
+            element?.classList.remove("section-visible");
+            setTimeout(() => {
+                element?.classList.add("hidden");
+            }, 500);
+        }
     }
 </script>
 
@@ -91,7 +125,7 @@
 
 <section class="container create-resource-section mx-auto flex flex-row flex-wrap">
     <button
-        class="float-left relative cursor-pointer flex"
+        class="float-left relative cursor-pointer flex w-full"
         on:click={toggleRequestCreatingResourceSection}
     >
         {#if openRequestCreatingResourceSection}
@@ -110,9 +144,7 @@
         <h3 class="text-xl font-bold mb-4">Request Creating Resource</h3>
     </button>
     <section
-        class="flex flex-wrap flex-row w-full {openRequestCreatingResourceSection
-            ? 'section-visible'
-            : 'section-invisible'}"
+        class="flex flex-wrap flex-row w-full section-visible"
         id="section-request-creating-resource"
     >
         <section class="flex mb-4 w-full">
@@ -151,8 +183,29 @@
         {#await createResourcePromise}
             <LoadingModal bind:openLoadingModal />
         {:then data}
-            <section class="flex flex-wrap flex-row w-full" id="response-created-resource-section">
+            <button
+                class="float-left relative cursor-pointer flex w-full"
+                on:click={toggleResponseCreatedResourceSection}
+            >
+                {#if openResponseCreatedResourceSection}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"
+                        ><title>collapse</title><path
+                            d="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z"
+                        /></svg
+                    >
+                {:else}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"
+                        ><title>expand</title><path
+                            d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+                        /></svg
+                    >
+                {/if}
                 <h3 class="text-xl font-bold mb-4">Response Created Resource</h3>
+            </button>
+            <section
+                class="flex flex-wrap flex-row w-full section-visible"
+                id="section-response-created-resource"
+            >
                 <Highlight language={json} code={JSON.stringify(data, null, 2)} let:highlighted>
                     <LineNumbers {highlighted} wrapLines />
                 </Highlight>
@@ -183,7 +236,7 @@
         transition: visibility 0s, all 0.5s linear;
     }
 
-    .section-invisible {
+    :global(.section-invisible) {
         visibility: hidden;
         opacity: 0;
         transition: visibility 0s, all 0.5s linear;
