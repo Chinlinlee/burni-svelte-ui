@@ -12,7 +12,4 @@
     ];
 </script>
 
-<Label class="block mb-2 text-gray-600">
-    Page Count
-    <Select items={pageCountOptions} bind:value={count} id="select-page-count" />
-</Label>
+<Select items={pageCountOptions} bind:value={count} id="select-page-count" />

@@ -18,18 +18,12 @@
     } from "flowbite-svelte";
 
     import { goto } from "$app/navigation";
-    import SettingsDrawer from "../components/settings-drawer.svelte";
     import { onMount } from "svelte";
     import { changeNavSearchUrl } from "../helper/nav-search-url.svelte";
     import { isUrlValid } from "$lib";
 
-    let hideSettingsDrawer = true;
     /** @type {HTMLButtonElement} */
     let backToTopBtn;
-
-    function onClickSettings() {
-        hideSettingsDrawer = false;
-    }
 
     function onClickSearch() {
         goto("search-result", {
@@ -98,7 +92,7 @@
                         </NavLi>
                     </div>
 
-                    <NavLi class="cursor-pointer translate-y-1/2" href="" on:click={onClickSettings}
+                    <NavLi class="cursor-pointer translate-y-1/2" href="/settings"
                         >Settings</NavLi
                     >
                     <NavLi class="cursor-pointer translate-y-1/2" href="/create-resource"
@@ -112,7 +106,6 @@
 
 <main class="h-[calc(100vh-74px)] pt-24">
     <slot />
-    <SettingsDrawer bind:hidden={hideSettingsDrawer} />
 
     <!-- Back to top button -->
     <button
