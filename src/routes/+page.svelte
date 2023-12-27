@@ -5,6 +5,10 @@
     } from "flowbite-svelte";
 </script>
 
+<svelte:head>
+    <title>Burni UI</title>
+</svelte:head>
+
 <div class="flex">
     <div class="mx-auto">
         <Img src="images/logo.png" class="w-64 mb-2 mx-auto"></Img>

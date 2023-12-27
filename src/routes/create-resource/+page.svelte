@@ -121,6 +121,7 @@
 
 <svelte:head>
     {@html edgeLight}
+    <title>Burni UI - Create your FHIR resource!</title>
 </svelte:head>
 
 <section class="container create-resource-section mx-auto flex flex-row flex-wrap">

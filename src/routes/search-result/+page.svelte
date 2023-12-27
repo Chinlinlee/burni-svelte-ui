@@ -60,6 +60,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>Burni UI - Search Result</title>
+</svelte:head>
+
 <section class="container mx-auto mt-2">
     {#await fetchFhirResourcesData}
         <div class:hidden={$settings.layout !== "json-viewer"}>
