@@ -1,7 +1,5 @@
 <script>
     import { Input, ButtonGroup, Button, Dropdown, DropdownItem } from "flowbite-svelte";
-    // @ts-ignore
-    import { isUndefined } from "lodash";
     import config from "$lib/fhir/config";
     import { ResourceSearchParameter } from "$lib/fhir/resource-search-parameter";
 
